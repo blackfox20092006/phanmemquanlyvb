@@ -139,8 +139,13 @@ def fRemovetag(list_file):
         except:
             return -2
 def fChangetags(list_file, new_tag):
+    # return -1 file has already had tag
+    # return 0 added tag successfully
+    # return 1 do not have permission to change file or file is not available
+    # return -2 tag is not available
     global temp
     if fChecktag(new_tag) == -1:
         return -3
     if fRemovetag(list_file) != -2 or fRemovetag(list_file) != -1:
-        fAddtags(temp, new_tag)
+        code = fAddtags(temp, new_tag)
+    return code
