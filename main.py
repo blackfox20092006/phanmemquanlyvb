@@ -4,12 +4,28 @@ from tkinter import ttk
 import Library.theme.sv_ttk as sv_ttk
 import os
 from tkinter import messagebox
+from tkinter import filedialog as fd
 root = tk.Tk()
 root.resizable(0,0)
 #root.state('zoomed')
-if fCheckdb() == 'MissingDatabase':
-    messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
-    root.destroy()
+try:
+    f = open('configdb.dat', 'r')
+    database_path = f.readline()
+    if database_path == '':
+        try:
+            os.remove('configdb.dat')
+        except:
+            pass
+except:
+    filename = fd.askdirectory(title='Chọn thư mục để làm thư mục chưa cơ sở dữ liệu cho chương trình')
+    f = open('configdb.dat', 'w')
+    f.write(filename)
+    f.close()
+    f = open('configdb.dat', 'r')
+    database_path = f.readline()
+#if fCheckdb() == 'MissingDatabase':
+#    messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
+#    root.destroy()
 #Custom GUI
 root.title("Quản Lý Văn Bản Hành Chính v1.0")
 root.option_add("*tearOff", False)
@@ -34,7 +50,7 @@ f = tk.BooleanVar()
 g = tk.DoubleVar(value=75.0)
 h = tk.BooleanVar()
 # Create a Frame for the Menu
-menu_frame = ttk.LabelFrame(root, text="Menu", padding=(0, 0, 0, 10))
+menu_frame = ttk.LabelFrame(root, text="Thêm tag", padding=(0, 0, 0, 10))
 menu_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), ipadx=30, sticky="nsew")
 menu_frame.columnconfigure(index=0, weight=1)
 # Separator
@@ -164,19 +180,43 @@ about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=a
 about_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
 #Menu
+def f_at(): #function add tag
+    global _filename_, _tag_, _begin_, _end_
+    _filename_ = str(_filename_)
+    _tag_ = str(_tag_)
+    _begin_, _end_ = int(_begin_), int(_end_)
+    if fChecktag(_tag_) != -1:
+        if (_filename_.split('.')) != 1:
+            fAdd_tag(_filename_, tag)
+        elif _end_.isnumeric() == True and _begin_.isnumeric() == True:
+            file_list2 = fList(database_path, 1)
+            file_list2 = fSort(file_list2)
+            i = 0
+            while len(file_list2[i].split('__')) == 1:
+                i += 1
+            if len(file_list2) < _end_ or _begin_ < 1 or i < _end_:
+                return -2
+            status = fAddtags(file_list2[_begin_-1:i+1])
+            return status
+    else:
+        return 'WrongTag'
+_filename_ = ttk.Entry(menu_frame)
+_filename_.insert(0, "Tên file")
+_filename_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
+#
 _tag_ = ttk.Entry(menu_frame)
-_tag_.insert(0, "Add tag you want")
-_tag_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
+_tag_.insert(0, "Tag bạn muốn gán cho file")
+_tag_.grid(row=0, column=1, padx=10, pady=(10, 10), sticky="ew")
 #
-_input_ = ttk.Entry(menu_frame)
-_input_.insert(0, "Input")
-_input_.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ew")
+_begin_ = ttk.Entry(menu_frame)
+_begin_.insert(0, "Đổi hàng loạt từ file thứ")
+_begin_.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ew")
 #
-_output_ = ttk.Entry(menu_frame)
-_output_.insert(0, "Output")
-_output_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
+_end_ = ttk.Entry(menu_frame)
+_end_.insert(0, "Đến file thứ (chưa có tag)")
+_end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
 #
-ok_button = ttk.Button(menu_frame, text='Đổi tag', style="Accent.TButton")
+ok_button = ttk.Button(menu_frame, text='Đổi tag', style="Accent.TButton", command=f_at())
 ok_button.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
 # Sizegrip
