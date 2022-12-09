@@ -4,28 +4,13 @@ from tkinter import ttk
 import Library.theme.sv_ttk as sv_ttk
 import os
 from tkinter import messagebox
-from tkinter import filedialog as fd
+from tkinter import *
 root = tk.Tk()
 root.resizable(0,0)
 #root.state('zoomed')
-try:
-    f = open('configdb.dat', 'r')
-    database_path = f.readline()
-    if database_path == '':
-        try:
-            os.remove('configdb.dat')
-        except:
-            pass
-except:
-    filename = fd.askdirectory(title='Chọn thư mục để làm thư mục chưa cơ sở dữ liệu cho chương trình')
-    f = open('configdb.dat', 'w')
-    f.write(filename)
-    f.close()
-    f = open('configdb.dat', 'r')
-    database_path = f.readline()
-#if fCheckdb() == 'MissingDatabase':
-#    messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
-#    root.destroy()
+if fCheckdb() == 'MissingDatabase':
+    messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
+    root.destroy()
 #Custom GUI
 root.title("Quản Lý Văn Bản Hành Chính v1.0")
 root.option_add("*tearOff", False)
@@ -50,7 +35,7 @@ f = tk.BooleanVar()
 g = tk.DoubleVar(value=75.0)
 h = tk.BooleanVar()
 # Create a Frame for the Menu
-menu_frame = ttk.LabelFrame(root, text="Thêm tag", padding=(0, 0, 0, 10))
+menu_frame = ttk.LabelFrame(root, text="Menu", padding=(0, 0, 0, 10))
 menu_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), ipadx=30, sticky="nsew")
 menu_frame.columnconfigure(index=0, weight=1)
 # Separator
@@ -165,29 +150,14 @@ def fExit_button():
 #==============================================================================================================================
 
 #main menu go here
-
-#Function
-backup_button = ttk.Button(radio_frame, text='Backup (coming soon)', command=backup)
-backup_button.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
-refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh)
-refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-
-exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button)
-exit_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
-
-about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about)
-about_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-#Menu
 def f_at(): #function add tag
     global _filename_, _tag_, _begin_, _end_
     _filename_ = str(_filename_)
     _tag_ = str(_tag_)
-    _begin_, _end_ = int(_begin_), int(_end_)
+    #_begin_, _end_ = int(_begin_), int(_end_)
     if fChecktag(_tag_) != -1:
         if (_filename_.split('.')) != 1:
-            fAdd_tag(_filename_, tag)
+            fAdd_tag(_filename_, _tag_)
         elif _end_.isnumeric() == True and _begin_.isnumeric() == True:
             file_list2 = fList(database_path, 1)
             file_list2 = fSort(file_list2)
@@ -200,24 +170,66 @@ def f_at(): #function add tag
             return status
     else:
         return 'WrongTag'
+'''
+def delete_tag(event):
+    _tag_.configure(state=NORMAL)
+    _tag_.delete(0, END)
+    _tag_.unbind('<Button-1>', clicked_tag)
+def delete_input(event):
+    _begin_.configure(state=NORMAL)
+    _begin_.delete(0, END)
+    _begin_.unbind('<Button-1>', clicked_input)
+def delete_output(event):
+    _end_.configure(state=NORMAL)
+    _end_.delete(0, END)
+    _end_.unbind('<Button-1>', clicked_output)
+def delete_namefile(event):
+    _filename_.configure(state=NORMAL)
+    _filename_.delete(0, END)
+    _filename_.unbind('<Button-1>', clicked_namefile)
+'''
+#Menu
 _filename_ = ttk.Entry(menu_frame)
 _filename_.insert(0, "Tên file")
 _filename_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
+
+#clicked_namefile = _filename_.bind('<Button-1>', delete_namefile)
 #
 _tag_ = ttk.Entry(menu_frame)
 _tag_.insert(0, "Tag bạn muốn gán cho file")
 _tag_.grid(row=0, column=1, padx=10, pady=(10, 10), sticky="ew")
+#clicked_tag = _tag_.bind('<Button-1>', delete_tag)
 #
 _begin_ = ttk.Entry(menu_frame)
-_begin_.insert(0, "Đổi hàng loạt từ file thứ")
+_begin_.insert(0, "Input")
 _begin_.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ew")
+#clicked_input = _begin_.bind('<Button-1>', delete_input)
 #
 _end_ = ttk.Entry(menu_frame)
-_end_.insert(0, "Đến file thứ (chưa có tag)")
+_end_.insert(0, "Output")
 _end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
+#clicked_output = _end_.bind('<Button-1>', delete_output)
 #
 ok_button = ttk.Button(menu_frame, text='Đổi tag', style="Accent.TButton", command=f_at())
-ok_button.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+ok_button.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+
+
+#open_button = ttk.Button(radio_frame, text='Open', style="Accent.TButton")
+#open_button.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
+
+#Function
+
+backup_button = ttk.Button(radio_frame, text='Backup (coming soon)', command=backup)
+backup_button.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh)
+refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button)
+exit_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
+
+about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about)
+about_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
 # Sizegrip
 sizegrip = ttk.Sizegrip(root)
