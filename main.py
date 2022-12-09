@@ -4,13 +4,12 @@ from tkinter import ttk
 import Library.theme.sv_ttk as sv_ttk
 import os
 from tkinter import messagebox
+root = tk.Tk()
+root.resizable(0,0)
+#root.state('zoomed')
 if fCheckdb() == 'MissingDatabase':
     messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
     root.destroy()
-root = tk.Tk()
-root.state('zoomed')
-# This is where the magic happens
-sv_ttk.set_theme("dark")
 #Custom GUI
 root.title("Quản Lý Văn Bản Hành Chính v1.0")
 root.option_add("*tearOff", False)
@@ -34,13 +33,26 @@ e = tk.StringVar(value=option_menu_list[1])
 f = tk.BooleanVar()
 g = tk.DoubleVar(value=75.0)
 h = tk.BooleanVar()
-# Create a Frame for input widgets
-widgets_frame = ttk.Frame(root, padding=(0, 0, 0, 10))
-widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
-widgets_frame.columnconfigure(index=0, weight=1)
+# Create a Frame for the Menu
+menu_frame = ttk.LabelFrame(root, text="Menu", padding=(0, 0, 0, 10))
+menu_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), ipadx=30, sticky="nsew")
+menu_frame.columnconfigure(index=0, weight=1)
+# Separator
+separator = ttk.Separator(root)
+separator.grid(row=1, column=0, padx=(20, 10), pady=10, sticky="ew")
+# Create a Frame for the Radiobuttons
+radio_frame = ttk.LabelFrame(root, text="Function", padding=(20, 10))
+radio_frame.grid(row=2, column=0, padx=(20, 10), pady=10, sticky="nsew")
+radio_frame.columnconfigure(index=0, weight=1)
+#Create a Frame for input widgets
+#widgets_frame = ttk.Frame(root, padding=(0, 0, 0, 10))
+#widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
+#widgets_frame.columnconfigure(index=0, weight=1)
+
+
 # Panedwindow
 paned = ttk.PanedWindow(root)
-paned.grid(row=0, column=2, pady=(25, 5), sticky="nsew", rowspan=3)
+paned.grid(row=0, column=1, pady=(25, 5), ipadx=50, sticky="nsew", rowspan=3)
 
 # Pane #1
 pane_1 = ttk.Frame(paned)
@@ -138,22 +150,44 @@ def fExit_button():
 
 #main menu go here
 
-#row 5
-backup_button = tk.Button(root, text='Backup (coming soon)', command=backup, font=('Time New Roman', 12, 'bold'), bg='gray')
-backup_button.grid(row=5, column=0, padx=10, pady=10, sticky='nsew')
-refresh_button = tk.Button(root, text="Làm mới danh sách", command=fRefresh, font=('Time New Roman', 12, 'bold'), bg='#00EE00', fg='black')
-refresh_button.grid(row=5, column=1, padx=10, pady=10, sticky="nsew")
+#Function
+backup_button = ttk.Button(radio_frame, text='Backup (coming soon)', command=backup)
+backup_button.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
+refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh)
+refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-#row 6
-exit_button = tk.Button(root, text='Thoát chương trình', command=fExit_button, font=('Time New Roman', 12, 'bold'), bg='#CC0000')
-exit_button.grid(row=6, column=0, padx=10, pady=10, sticky='nsew')
-about_button = tk.Button(root, text='Thông tin phần mềm', command=about, font=('Time New Roman', 12, 'bold'), bg = '#FF6600')
-about_button.grid(row=6, column=1, padx=10, pady=10, sticky='nsew')
+exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button)
+exit_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
 
+about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about)
+about_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
+#Menu
+_tag_ = ttk.Entry(menu_frame)
+_tag_.insert(0, "Add tag you want")
+_tag_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
+#
+_input_ = ttk.Entry(menu_frame)
+_input_.insert(0, "Input")
+_input_.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ew")
+#
+_output_ = ttk.Entry(menu_frame)
+_output_.insert(0, "Output")
+_output_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
+#
+ok_button = ttk.Button(menu_frame, text='Đổi tag', style="Accent.TButton")
+ok_button.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
 # Sizegrip
 sizegrip = ttk.Sizegrip(root)
 sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))
+# Center the window, and set minsize
+root.update()
+root.minsize(root.winfo_width(), root.winfo_height())
+x_cordinate = int((root.winfo_screenwidth()/2) - (root.winfo_width()/2))
+y_cordinate = int((root.winfo_screenheight()/2) - (root.winfo_height()/2))
+root.geometry("+{}+{}".format(x_cordinate, y_cordinate))
+# This is where the magic happens
+sv_ttk.set_theme("dark")
 root.mainloop()
