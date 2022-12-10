@@ -7,7 +7,6 @@ from tkinter import filedialog as fd
 main_path = os.getcwd()
 os.system('cd database')
 database_path = os.getcwd()
-os.chdir(main_path)
 #functions _________________________________________________________________________________________
 
 def fCheckdb():
@@ -168,8 +167,8 @@ def fChangetags(list_file, new_tag):
 
 def fRefresh():
     root.destroy()
-    cmd = 'py ' + main_path + '\\' + 'main.py'
-    os.system(cmd)
+    os.chdir(main_path)
+    os.system('py main.py')
 
 def fOpen(file_name):
     #return -1, wrong file name or do not have permission to open
