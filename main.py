@@ -5,6 +5,9 @@ import os
 from tkinter import messagebox
 from tkinter import filedialog as fd
 main_path = os.getcwd()
+os.system('cd database')
+database_path = os.getcwd()
+os.chdir(main_path)
 #functions _________________________________________________________________________________________
 
 def fCheckdb():
@@ -201,6 +204,7 @@ def fExit_button():
 root = tk.Tk()
 root.resizable(0,0)
 #root.state('zoomed')
+'''
 try:
     f = open('configdb.dat', 'r')
     database_path = f.readline()
@@ -216,6 +220,8 @@ except:
     f.close()
     f = open('configdb.dat', 'r')
     database_path = f.readline()
+'''
+
 #if fCheckdb() == 'MissingDatabase':
 #    messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
 #    root.destroy()
@@ -319,6 +325,7 @@ treeview.bind('<<TreeviewSelect>>', get_data_listbox)
 
 
 #main menu go here
+'''
 def f_at(): #function add tag
     global _filename_, _tag_, _begin_, _end_
     #_filename_ = str(_filename_)
@@ -352,7 +359,7 @@ def f_change():
     if fChecktag(changetagename) != -1:
         if (filename.split('.')) != 1:
             fChangetag(changetagename, filename)
-
+'''
 _str_filename_ = tk.StringVar()
 _str_tag_ = tk.StringVar()
 _str_changetag_ = tk.StringVar()
@@ -379,7 +386,7 @@ _end_.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
 _tag_ = ttk.Entry(menu_frame, textvariable=_str_tag_)
 _tag_.insert(0, "Tag bạn muốn gán cho file")
 _tag_.grid(row=2, column=0, padx=10, pady=(10, 10), sticky="ew")
-addtag_button = ttk.Button(menu_frame, text='Add tag', style="Accent.TButton", command=lambda: f_at())
+addtag_button = ttk.Button(menu_frame, text='Add tag', style="Accent.TButton", command=lambda: fAdd_tag(_str_filename_.get(), _str_tag_.get()))
 addtag_button.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
 
 
