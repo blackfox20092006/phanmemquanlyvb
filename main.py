@@ -152,24 +152,37 @@ def fExit_button():
 #main menu go here
 def f_at(): #function add tag
     global _filename_, _tag_, _begin_, _end_
-    _filename_ = str(_filename_)
-    _tag_ = str(_tag_)
-    #_begin_, _end_ = int(_begin_), int(_end_)
-    if fChecktag(_tag_) != -1:
-        if (_filename_.split('.')) != 1:
-            fAdd_tag(_filename_, _tag_)
-        elif _end_.isnumeric() == True and _begin_.isnumeric() == True:
+    #_filename_ = str(_filename_)
+    #_tag_ = str(_tag_)
+    filename = _str_filename_.get() 
+    tagename = _str_tag_.get()
+    begin = _int_begin_.get()
+    end = _int_end_.get()
+    if fChecktag(tagename) != -1:
+        if (filename.split('.')) != 1:
+            fAdd_tag(filename, tagename)
+        elif end.isnumeric() == True and begin.isnumeric() == True:
             file_list2 = fList(database_path, 1)
             file_list2 = fSort(file_list2)
             i = 0
             while len(file_list2[i].split('__')) == 1:
                 i += 1
-            if len(file_list2) < _end_ or _begin_ < 1 or i < _end_:
+            if len(file_list2) < end or begin < 1 or i < end:
                 return -2
-            status = fAddtags(file_list2[_begin_-1:i+1])
+            status = fAddtags(file_list2[begin-1:i+1])
             return status
     else:
         return 'WrongTag'
+
+def f_change():
+    global _filename_, _tag_, _begin_, _end_
+    filename = _str_filename_.get()
+    changetagename = _str_changetag_.get()
+    begin = _int_begin_.get()
+    end = _int_end_.get()
+    if fChecktag(changetagename) != -1:
+        if (filename.split('.')) != 1:
+            fChangetag(changetagename, filename)
 '''
 def delete_tag(event):
     _tag_.configure(state=NORMAL)
@@ -188,31 +201,42 @@ def delete_namefile(event):
     _filename_.delete(0, END)
     _filename_.unbind('<Button-1>', clicked_namefile)
 '''
+
+_str_filename_ = tk.StringVar()
+_str_tag_ = tk.StringVar()
+_str_changetag_ = tk.StringVar()
+_int_begin_ = tk.IntVar()
+_int_end_ = tk.IntVar()
 #Menu
-_filename_ = ttk.Entry(menu_frame)
+_filename_ = ttk.Entry(menu_frame, textvariable=_str_filename_)
 _filename_.insert(0, "Tên file")
 _filename_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
-
 #clicked_namefile = _filename_.bind('<Button-1>', delete_namefile)
 #
-_tag_ = ttk.Entry(menu_frame)
+_tag_ = ttk.Entry(menu_frame, textvariable=_str_tag_)
 _tag_.insert(0, "Tag bạn muốn gán cho file")
 _tag_.grid(row=0, column=1, padx=10, pady=(10, 10), sticky="ew")
 #clicked_tag = _tag_.bind('<Button-1>', delete_tag)
 #
-_begin_ = ttk.Entry(menu_frame)
-_begin_.insert(0, "Input")
+_changetag_ = ttk.Entry(menu_frame, textvariable=_str_changetag_)
+_changetag_.insert(0, "Tag bạn muốn đổi cho file")
+_changetag_.grid(row=4, column=0, padx=10, pady=(10, 10), sticky="ew")
+#
+_begin_ = ttk.Spinbox(menu_frame, textvariable=_int_begin_, from_=0, to=100)
+#_begin_.insert(0, "Input")
 _begin_.grid(row=1, column=0, padx=10, pady=(10, 10), sticky="ew")
 #clicked_input = _begin_.bind('<Button-1>', delete_input)
 #
-_end_ = ttk.Entry(menu_frame)
-_end_.insert(0, "Output")
+_end_ = ttk.Spinbox(menu_frame, textvariable=_int_end_, from_=0, to=100)
+#_end_.insert(0, "Output")
 _end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
 #clicked_output = _end_.bind('<Button-1>', delete_output)
 #
-ok_button = ttk.Button(menu_frame, text='Đổi tag', style="Accent.TButton", command=f_at())
-ok_button.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+addtag_button = ttk.Button(menu_frame, text='Add tag', style="Accent.TButton", command=lambda: f_at())
+addtag_button.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
 
+changetag_button = ttk.Button(menu_frame, text='Change tag', style="Accent.TButton", command=lambda: f_change())
+changetag_button.grid(row=4, column=1, padx=10, pady=10, sticky="nsew")
 
 #open_button = ttk.Button(radio_frame, text='Open', style="Accent.TButton")
 #open_button.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
@@ -236,6 +260,7 @@ sizegrip = ttk.Sizegrip(root)
 sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))
 # Center the window, and set minsize
 root.update()
+#root.eval('tk::PlaceWindow . center')
 root.minsize(root.winfo_width(), root.winfo_height())
 x_cordinate = int((root.winfo_screenwidth()/2) - (root.winfo_width()/2))
 y_cordinate = int((root.winfo_screenheight()/2) - (root.winfo_height()/2))
