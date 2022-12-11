@@ -1,4 +1,8 @@
+import shutil
+import os.path
+from datetime import datetime
 import os
+from tkinter import messagebox
 main_path = os.getcwd()
 database_path = main_path + '\\' + 'database'
 def fCheckdb():
@@ -8,7 +12,6 @@ def fCheckdb():
         return 0
     except:
         return 'MissingDatabase'
-    
 def fList(path, mode):
     mode = int(mode)
     f_list = os.listdir(path)
@@ -154,3 +157,35 @@ def fChangetags(list_file, new_tag):
     if fRemovetag(list_file) != -2 or fRemovetag(list_file) != -1:
         code = fAddtags(temp, new_tag)
     return code
+
+
+def fFind (keyword):
+    file_list = fList(database_path, 1)
+    result = []
+    for i in file_list:
+        if i.find(keyword) != -1 or (i.upper()).find(keyword) != -1 or (i.lower()).find(keyword) != -1 or i.find(keyword.upper()) != -1 or (i.upper()).find(keyword.upper()) != -1  or (i.lower()).find(keyword.upper()) != -1 or i.find(keyword.lower()) != -1 or (i.upper()).find(keyword.lower()) != -1  or (i.lower()).find(keyword.lower()) != -1 :
+            result += [i]
+    result2 = []
+    for i in result:
+        if i not in result2:
+            result2 += [i]
+        else:
+            pass
+    return result2
+def fBackup():
+    time_archive = datetime.now()
+    time_archive = time_archive.strftime('%d-%m-%Y_%H-%M-%S')
+    os.chdir(main_path)
+    name = 'database' + '_' + time_archive
+    destination = main_path + '\\backup'
+    shutil.make_archive(name, 'zip', 'database')
+    if os.path.exists(name+'.zip'):
+        shutil.move(name+'.zip', destination)
+        messagebox.showinfo('Thành công', 'Đã sao lưu dữ liệu thành công! Hãy kiểm tra tại thư mục backup.')
+    else:
+        messagebox.showerror('Lỗi', 'Sao lưu dữ liệu thất bại.')
+        try:
+            os.remove(name+'.zip')
+        except:
+            pass
+    os.chdir(main_path)
