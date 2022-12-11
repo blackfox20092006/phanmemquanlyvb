@@ -129,8 +129,8 @@ Tác giả : Trần Thanh Trọng và Hoàng Quang Nhân
 ''')
 
 
-def backup():
-    pass
+def calc():
+    os.system('calc')
 
 
 def fExit_button():
@@ -254,8 +254,8 @@ changetag_button.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
 
 #Function
 
-backup_button = ttk.Button(radio_frame, text='Backup (coming soon)', command=backup, style="Accent.TButton")
-backup_button.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+calc = ttk.Button(radio_frame, text='Máy tính', command=calc, style="Accent.TButton")
+calc.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
 refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh, style="Accent.TButton")
 refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
