@@ -114,7 +114,7 @@ def get_data_listbox(event):
         root.update()
         messagebox.showinfo("Thông báo", "Đã sao chép tên tệp tin")
 
-treeview.bind('<ButtonRelease-1>', get_data_listbox)
+treeview.bind('<<TreeviewSelect>>', get_data_listbox)
 
 def fRefresh():
     root.destroy()
@@ -229,6 +229,7 @@ _end_ = ttk.Spinbox(menu_frame, textvariable=_int_end_, from_=0, to=100)
 #_end_.insert(0, "Output")
 _end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
 #clicked_output = _end_.bind('<Button-1>', delete_output)
+
 '''
 #row 2
 
@@ -304,7 +305,7 @@ def fFind_mini():
         for item in treeview_data:
             treeview.insert(parent='', index='end', text=j, iid=j, values=item)
             j += 1
-        #treeview.bind('<<TreeviewSelect>>', get_data_listbox)
+        treeview.bind('<<TreeviewSelect>>', get_data_listbox)
         child_root.minsize(treeview.winfo_width(), child_root.winfo_height())
         child_root.geometry("+{}+{}".format(0, 0))
         treeview.see(1)
