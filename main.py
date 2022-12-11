@@ -262,7 +262,72 @@ def fFind_mini():
     if len(result) == 0:
         messagebox.showerror('Lỗi', 'Không tìm thấy bất kì kết quả phù hợp nào ! Vui lòng thử với từ khóa khác.')
     else:
-        pass
+        child_root = Toplevel(root)
+        child_root.title('Kết quả tìm kiếm cho từ khóa "' + keyword + '"')
+        child_root.resizable(0, 0)
+
+        # Panedwindow
+        paned = ttk.PanedWindow(child_root, height=500, width=500)
+        paned.grid(row=0, column=1, pady=(25, 5), ipadx=50, sticky="nsew", rowspan=3)
+
+        # Pane #1
+        pane_1 = ttk.Frame(paned)
+        paned.add(pane_1, weight=1)
+
+        # Create a Frame for the Treeview
+        treeFrame = ttk.Frame(pane_1)
+        treeFrame.pack(expand=True, fill="both", padx=5, pady=5)
+
+        # Scrollbar
+        treeScroll = ttk.Scrollbar(treeFrame)
+        treeScroll.pack(side="right", fill="y")
+
+        # Treeview
+        treeview = ttk.Treeview(treeFrame, selectmode="extended", yscrollcommand=treeScroll.set, columns=(1, 2),height=25)
+        treeview.pack(expand=True, fill="both")
+        treeScroll.config(command=treeview.yview)
+
+        # Treeview columns
+        treeview.column("#0", width=10)
+        treeview.column(1, anchor="w", width=120)
+        treeview.column(2, anchor="w", width=120)
+
+        # Treeview headings
+        treeview.heading("#0", text="Số Thứ Tự", anchor="center")
+        treeview.heading(1, text="Tên File", anchor="center")
+        treeview.heading(2, text="Loại Văn Bản", anchor="center")
+
+        treeview_data = []
+        for i in result:
+            treeview_data.append((i, (i.split('__'))[0]))
+        j = 1
+
+        for item in treeview_data:
+            treeview.insert(parent='', index='end', text=j, iid=j, values=item)
+            j += 1
+        treeview.bind('<<TreeviewSelect>>', get_data_listbox)
+        child_root.minsize(treeview.winfo_width(), child_root.winfo_height())
+        child_root.geometry("+{}+{}".format(0, 0))
+        treeview.see(1)
+
+        def get_data_listbox2(event):
+            file_name = ''
+            for item_listbox in treeview.selection():
+                item = treeview.item(item_listbox)
+                record = ' '.join(item["values"])
+                file_name = (record.split('.'))[0] + '.' + (((record.split('.'))[1]).split(' '))[0]
+                child_root.clipboard_clear()
+                child_root.clipboard_append(file_name)
+                child_root.update()
+                messagebox.showinfo("Thông báo", "Đã sao chép tên tệp tin")
+
+        treeview.bind('<<TreeviewSelect>>', get_data_listbox2)
+        # This is where the magic happens
+        sv_ttk.set_theme("dark")
+        def fClose():
+            child_root.destroy()
+        close_button = ttk.Button(child_root, text='Đóng cửa sổ', style="Accent.TButton", command=lambda: fClose())
+        close_button.grid(row=5, column=1, padx=10, pady=(10, 10), sticky='ew')
 _keyword_ = ttk.Entry(menu_frame, textvariable=_str_keyword_)
 _keyword_.insert(0, "Từ khóa")
 _keyword_.grid(row=4, column=0, padx=10, pady=(10, 10), sticky="ew")
