@@ -5,6 +5,7 @@ import Library.theme.sv_ttk as sv_ttk
 import os
 from tkinter import messagebox
 from tkinter import *
+from tkinter import filedialog as fd
 root = tk.Tk()
 root.resizable(0,0)
 #root.state('zoomed')
@@ -35,14 +36,14 @@ f = tk.BooleanVar()
 g = tk.DoubleVar(value=75.0)
 h = tk.BooleanVar()
 # Create a Frame for the Menu
-menu_frame = ttk.LabelFrame(root, text="Menu", padding=(0, 0, 0, 10))
+menu_frame = ttk.LabelFrame(root, text="Quản lý tag", padding=(0, 0, 0, 10))
 menu_frame.grid(row=0, column=0, padx=(20, 10), pady=(20, 10), ipadx=30, sticky="nsew")
 menu_frame.columnconfigure(index=0, weight=1)
 # Separator
 separator = ttk.Separator(root)
 separator.grid(row=1, column=0, padx=(20, 10), pady=10, sticky="ew")
 # Create a Frame for the Radiobuttons
-radio_frame = ttk.LabelFrame(root, text="Function", padding=(20, 10))
+radio_frame = ttk.LabelFrame(root, text="Chức năng khác", padding=(20, 10))
 radio_frame.grid(row=2, column=0, padx=(20, 10), pady=10, sticky="nsew")
 radio_frame.columnconfigure(index=0, weight=1)
 #Create a Frame for input widgets
@@ -206,6 +207,7 @@ _str_tag_ = tk.StringVar()
 _str_changetag_ = tk.StringVar()
 _int_begin_ = tk.IntVar()
 _int_end_ = tk.IntVar()
+_str_keyword_ = tk.StringVar()
 #Menu
 
 #row 1
@@ -229,7 +231,7 @@ _end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
 #clicked_output = _end_.bind('<Button-1>', delete_output)
 
 '''
-#row 3
+#row 2
 
 
 
@@ -237,22 +239,52 @@ _end_.grid(row=1, column=1, padx=10, pady=(10, 10), sticky="ew")
 _tag_ = ttk.Entry(menu_frame, textvariable=_str_tag_)
 _tag_.insert(0, "Tag bạn muốn gán cho file")
 _tag_.grid(row=2, column=0, padx=10, pady=(10, 10), sticky="ew")
-addtag_button = ttk.Button(menu_frame, text='Add tag', style="Accent.TButton", command=lambda: f_at())
+addtag_button = ttk.Button(menu_frame, text='Thêm tag', style="Accent.TButton", command=lambda: f_at())
 addtag_button.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
 
 #clicked_tag = _tag_.bind('<Button-1>', delete_tag)
 
+
+#row 3
 _changetag_ = ttk.Entry(menu_frame, textvariable=_str_changetag_)
 _changetag_.insert(0, "Tag bạn muốn đổi cho file")
 _changetag_.grid(row=3, column=0, padx=10, pady=(10, 10), sticky="ew")
 
-changetag_button = ttk.Button(menu_frame, text='Change tag', style="Accent.TButton", command=lambda: f_change())
+changetag_button = ttk.Button(menu_frame, text='Thay đổi tag', style="Accent.TButton", command=lambda: f_change())
 changetag_button.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+
+
+#row 4
+
+def fFind_mini():
+    keyword = _str_keyword_.get()
+    result = fFind(keyword)
+    if len(result) == 0:
+        messagebox.showerror('Lỗi', 'Không tìm thấy bất kì kết quả phù hợp nào ! Vui lòng thử với từ khóa khác.')
+    else:
+        pass
+_keyword_ = ttk.Entry(menu_frame, textvariable=_str_keyword_)
+_keyword_.insert(0, "Từ khóa")
+_keyword_.grid(row=4, column=0, padx=10, pady=(10, 10), sticky="ew")
+
+find_button = ttk.Button(menu_frame, text='Tìm kiếm', style="Accent.TButton", command=lambda: fFind_mini())
+find_button.grid(row=4, column=1, padx=10, pady=10, sticky="nsew")
+
 
 #open_button = ttk.Button(radio_frame, text='Open', style="Accent.TButton")
 #open_button.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
 
 #Function
+
+def fAdd():
+    filename = fd.askopenfilename()
+    shutil.move(filename, database_path)
+    fn = (filename.split('/'))[len(filename.split('/'))-1]
+    file_2 = database_path + '\\' + fn
+    if os.path.exists(file_2):
+        messagebox.showinfo('Thành công', 'Thêm tệp vào cơ sở dữ liệu thành công !')
+    else:
+        messagebox.showerror('Thất bại', 'Thêm tệp vào cơ sở dữ liệu thất bại !')
 
 calc = ttk.Button(radio_frame, text='Máy tính', command=calc, style="Accent.TButton")
 calc.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -260,11 +292,17 @@ calc.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh, style="Accent.TButton")
 refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton")
-exit_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
+backup_button = ttk.Button(radio_frame, text='Sao lưu dữ liệu', command=fBackup, style="Accent.TButton")
+backup_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
+
+add_button = ttk.Button(radio_frame, text='Thêm tệp vào cơ sở dữ liệu', command=fAdd, style="Accent.TButton")
+add_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
 about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about,style="Accent.TButton")
-about_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
+about_button.grid(row=2, column=1, padx=10, pady=10, sticky='nsew')
+
+exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton")
+exit_button.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
 
 # Sizegrip
 sizegrip = ttk.Sizegrip(root)
