@@ -7,36 +7,59 @@ from tkinter import messagebox
 from tkinter import *
 from tkinter import filedialog as fd
 
+welcome_window = tk.Tk()
 
+def welcome():
+    welcome_window.option_add("*tearOff", False)
+    welcome_window.overrideredirect(True)
+    window_height = 400
+    window_width = 600
+    screen_width = welcome_window.winfo_screenwidth()
+    screen_height = welcome_window.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (window_width/2))
+    y_cordinate = int((screen_height/2) - (window_height/2))
+    welcome_window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+    welcome_window.columnconfigure(index=0, weight=1)
+    welcome_window.columnconfigure(index=1, weight=1)
+    welcome_window.columnconfigure(index=2, weight=1)
+    welcome_window.rowconfigure(index=0, weight=1)
+    welcome_window.rowconfigure(index=1, weight=1)
+    welcome_window.rowconfigure(index=2, weight=1)
+    welcome_window.resizable(False,False)
+    sizegrip = ttk.Sizegrip(welcome_window)
+    sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))# Create a style
+
+    welcome_frame = ttk.Frame(welcome_window, padding=(40,0, 0, 10))
+    welcome_frame.grid(row=0, column=1, padx=0, pady=(50,10), sticky="nsew", rowspan=3)
+    welcome_frame.columnconfigure(index=0, weight=1)
+
+    Font = ("Comic Sans MS", 20, "bold")
+    text1 = ttk.Label(welcome_frame, text='''Welcome''', font=Font)
+    text1.grid(row=0, column=0, pady=50, columnspan=2)
+
+
+    accentbutton = ttk.Button(welcome_frame, text="Load Program", style="Accent.TButton", command=lambda: main_window())
+    accentbutton.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 def main_window():
+    welcome_window.destroy()
+    #root.state('zoomed')]
     root = tk.Tk()
-    root.resizable(0, 0)
-    # root.state('zoomed')
-    if fCheckdb() == 'MissingDatabase':
-        messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
-        root.destroy()
-    # Custom GUI
+    root.iconbitmap('img//appicon.ico')
+    #Custom GUI
     root.title("Quản Lý Văn Bản Hành Chính v1.0")
     root.option_add("*tearOff", False)
-    # Make the app responsive
+    #Make the app responsive
     root.columnconfigure(index=0, weight=1)
     root.columnconfigure(index=1, weight=1)
     root.columnconfigure(index=2, weight=1)
     root.rowconfigure(index=0, weight=1)
     root.rowconfigure(index=1, weight=1)
     root.rowconfigure(index=2, weight=1)
-    # Create lists for the Comboboxes
-    option_menu_list = ["", "OptionMenu", "Option 1", "Option 2"]
-    combo_list = ["Combobox", "Editable item 1", "Editable item 2"]
-    readonly_combo_list = ["Readonly combobox", "Item 1", "Item 2"]
-    # Create control variables
-    a = tk.BooleanVar()
-    b = tk.BooleanVar(value=True)
-    c = tk.BooleanVar()
-    d = tk.IntVar(value=2)
-    e = tk.StringVar(value=option_menu_list[1])
-    f = tk.BooleanVar()
-    g = tk.DoubleVar(value=75.0)
+    root.resizable(False, False)
+    
+    if fCheckdb() == 'MissingDatabase':
+        messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
+        root.destroy()
     h = tk.BooleanVar()
     # Create a Frame for the Menu
     menu_frame = ttk.LabelFrame(root, text="Quản lý tag", padding=(0, 0, 0, 10))
@@ -362,16 +385,18 @@ def main_window():
     exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton")
     exit_button.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
 
-    # Sizegrip
+    #Sizegrip
     sizegrip = ttk.Sizegrip(root)
     sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))
-    # Center the window, and set minsize
+    #Center the window, and set minsize
     root.update()
     # root.eval('tk::PlaceWindow . center')
     root.minsize(root.winfo_width(), root.winfo_height())
     x_cordinate = int((root.winfo_screenwidth() / 2) - (root.winfo_width() / 2))
     y_cordinate = int((root.winfo_screenheight() / 2) - (root.winfo_height() / 2))
     root.geometry("+{}+{}".format(x_cordinate, y_cordinate))
-    # This is where the magic happens
     sv_ttk.set_theme("dark")
     root.mainloop()
+
+welcome()
+welcome_window.mainloop()
