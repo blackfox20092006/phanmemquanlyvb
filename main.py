@@ -148,7 +148,8 @@ def main_window():
     def fRefresh():
         root.destroy()
         os.chdir(main_path)
-        os.system('py main.py')
+        os.system('py main.py') # use when run as Py extension
+        #os.system('main.exe') # use when run as application (*.exe)
 
     def about():
         tk.messagebox.showinfo('Thông tin phần mềm', '''
