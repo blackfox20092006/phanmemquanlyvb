@@ -9,6 +9,7 @@ from tkinter import filedialog as fd
 
 welcome_window = tk.Tk()
 
+
 def welcome():
     welcome_window.option_add("*tearOff", False)
     welcome_window.overrideredirect(True)
@@ -16,8 +17,8 @@ def welcome():
     window_width = 600
     screen_width = welcome_window.winfo_screenwidth()
     screen_height = welcome_window.winfo_screenheight()
-    x_cordinate = int((screen_width/2) - (window_width/2))
-    y_cordinate = int((screen_height/2) - (window_height/2))
+    x_cordinate = int((screen_width / 2) - (window_width / 2))
+    y_cordinate = int((screen_height / 2) - (window_height / 2))
     welcome_window.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
     welcome_window.columnconfigure(index=0, weight=1)
     welcome_window.columnconfigure(index=1, weight=1)
@@ -25,36 +26,36 @@ def welcome():
     welcome_window.rowconfigure(index=0, weight=1)
     welcome_window.rowconfigure(index=1, weight=1)
     welcome_window.rowconfigure(index=2, weight=1)
-    welcome_window.resizable(False,False)
+    welcome_window.resizable(False, False)
     sizegrip = ttk.Sizegrip(welcome_window)
-    sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))# Create a style
+    sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))  # Create a style
 
     s = ttk.Style()
     s.theme_use('clam')
-    a='#333333'
-    Frame(welcome_window,width=600,height=400,bg=a).place(x=0,y=0)
+    a = '#333333'
+    Frame(welcome_window, width=600, height=400, bg=a).place(x=0, y=0)
     welcome_frame = ttk.Frame()
-    welcome_frame.grid(row=0, column=1, padx=0, pady=(50,10), sticky="nsew", rowspan=3)
+    welcome_frame.grid(row=0, column=1, padx=0, pady=(50, 10), sticky="nsew", rowspan=3)
     welcome_frame.columnconfigure(index=0, weight=1)
-    Frame(welcome_frame,width=600,height=600,bg=a).place(x=0,y=0)
+    Frame(welcome_frame, width=600, height=600, bg=a).place(x=0, y=0)
 
-    Font = ("Comic Sans MS", 20, "bold")
+    Font = ("Comic Sans MS", 40, "bold")
     text1 = ttk.Label(welcome_frame, text='''Welcome''', font=Font, foreground="white", background=a)
     text1.grid(row=0, column=0, pady=50, columnspan=2)
 
-
-    accentbutton = ttk.Button(welcome_frame, text="Load Program", style="Accent.TButton", command=lambda: main_window())
+    accentbutton = ttk.Button(welcome_frame, text="CHẠY PHẦN MỀM", style="Accent.TButton", command=lambda: main_window())
     accentbutton.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
 
 def main_window():
     welcome_window.destroy()
-    #root.state('zoomed')]
+    # root.state('zoomed')]
     root = tk.Tk()
     root.iconbitmap('img//appicon.ico')
-    #Custom GUI
+    # Custom GUI
     root.title("Quản Lý Văn Bản Hành Chính v1.0")
     root.option_add("*tearOff", False)
-    #Make the app responsive
+    # Make the app responsive
     root.columnconfigure(index=0, weight=1)
     root.columnconfigure(index=1, weight=1)
     root.columnconfigure(index=2, weight=1)
@@ -62,7 +63,7 @@ def main_window():
     root.rowconfigure(index=1, weight=1)
     root.rowconfigure(index=2, weight=1)
     root.resizable(False, False)
-    
+
     if fCheckdb() == 'MissingDatabase':
         messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
         root.destroy()
@@ -391,10 +392,10 @@ def main_window():
     exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton")
     exit_button.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
 
-    #Sizegrip
+    # Sizegrip
     sizegrip = ttk.Sizegrip(root)
     sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))
-    #Center the window, and set minsize
+    # Center the window, and set minsize
     root.update()
     # root.eval('tk::PlaceWindow . center')
     root.minsize(root.winfo_width(), root.winfo_height())
@@ -403,6 +404,7 @@ def main_window():
     root.geometry("+{}+{}".format(x_cordinate, y_cordinate))
     sv_ttk.set_theme("dark")
     root.mainloop()
+
 
 welcome()
 welcome_window.mainloop()
