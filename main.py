@@ -29,17 +29,23 @@ def welcome():
     sizegrip = ttk.Sizegrip(welcome_window)
     sizegrip.grid(row=100, column=100, padx=(0, 5), pady=(0, 5))# Create a style
 
-    welcome_frame = ttk.Frame(welcome_window, padding=(40,0, 0, 10))
+    s = ttk.Style()
+    s.theme_use('clam')
+    a='#333333'
+    Frame(welcome_window,width=600,height=400,bg=a).place(x=0,y=0)
+    welcome_frame = ttk.Frame()
     welcome_frame.grid(row=0, column=1, padx=0, pady=(50,10), sticky="nsew", rowspan=3)
     welcome_frame.columnconfigure(index=0, weight=1)
+    Frame(welcome_frame,width=600,height=600,bg=a).place(x=0,y=0)
 
     Font = ("Comic Sans MS", 20, "bold")
-    text1 = ttk.Label(welcome_frame, text='''Welcome''', font=Font)
+    text1 = ttk.Label(welcome_frame, text='''Welcome''', font=Font, foreground="white", background=a)
     text1.grid(row=0, column=0, pady=50, columnspan=2)
 
 
     accentbutton = ttk.Button(welcome_frame, text="Load Program", style="Accent.TButton", command=lambda: main_window())
     accentbutton.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
 def main_window():
     welcome_window.destroy()
     #root.state('zoomed')]
