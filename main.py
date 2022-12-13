@@ -23,7 +23,7 @@ def main_window():
     root.resizable(False, False)
 
     if fCheckdb() == 'MissingDatabase':
-        messagebox.showerror("Lỗi", "Không tìm thấy cơ sở dữ liệu")
+        messagebox.showerror("Lỗi", "Không thể tìm thấy các tệp của chương trình!")
         root.destroy()
     h = tk.BooleanVar()
     # Create a Frame for the Menu
@@ -137,6 +137,7 @@ def main_window():
             if (filename.split('.')) != 1:
                 fAdd_tag(filename, tagename)
                 tk.messagebox.showinfo('Thành công', 'Thêm tag thành công !')
+                fRefresh()
                 return 0
             # elif end.isnumeric() == True and begin.isnumeric() == True:
             #    file_list2 = fList(database_path, 1)
@@ -149,6 +150,7 @@ def main_window():
             #    status = fAddtags(file_list2[begin-1:i+1])
             #    return status
         else:
+            messagebox.showerror('Lỗi', 'Tên tag không hợp lệ, vui lòng kiểm tra lại! (Tag hợp lệ chưa các kí tự hoa, thường trong bảng chữ cái và không được phép bắt đầu bằng số hoặc chứa kí tự trống)')
             return 'WrongTag'
 
     def f_change():
@@ -159,14 +161,27 @@ def main_window():
         end = _int_end_.get()
         if fChecktag(changetagename) != -1:
             if (filename.split('.')) != 1:
-                fChangetag(changetagename, filename)
-
+                try:
+                    fChangetag(changetagename, filename)
+                    messagebox.showinfo('Thành công', 'Thay đổi tag thành công!')
+                    fRefresh()
+                except:
+                    messagebox.showerror('Lỗi', 'Thay đổi tag không thành công!')
+            else:
+                messagebox.showerror('Lỗi', 'Tên tệp không hợp lệ, vui lòng kiểm tra lại!')
+        else:
+            messagebox.showerror('Lỗi', 'Tên tag không hợp lệ, vui lòng kiểm tra lại (Tag hợp lệ chưa các kí tự hoa, thường trong bảng chữ cái và không được phép bắt đầu bằng số hoặc chứa kí tự trống)')
     def f_open():
         global _filename_, _tag_, _begin_, _end_
         filename = _str_filename_.get()
         os.chdir(database_path)
-        os.startfile(filename)
-
+        if os.path.exists(filename):
+            try:
+                os.startfile(filename)
+            except:
+                messagebox.showerror('Lỗi', 'Không thể mở tệp. Vui lòng thử lại sau. ')
+        else:
+            messagebox.showerror('Lỗi', 'Tên tệp không tồn tại, vui lòng kiểm tra lại!')
     '''
     def delete_tag(event):
         _tag_.configure(state=NORMAL)
@@ -199,8 +214,24 @@ def main_window():
     _filename_.insert(0, "Tên file")
     _filename_.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="ew")
 
-    addtag_button = ttk.Button(menu_frame, text='Mở', style="Accent.TButton", command=lambda: f_open())
-    addtag_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+    open_button = ttk.Button(menu_frame, text='Mở', style="Accent.TButton", command=lambda: f_open())
+    open_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+    def f_delete():
+        filename = _str_filename_.get()
+        os.chdir(database_path)
+        if os.path.exists(filename):
+            try:
+                os.remove(filename)
+                messagebox.showinfo('Thành công', 'Xóa tệp khỏi cơ sở dữ liệu thành công!')
+                fRefresh()
+            except:
+                messagebox.showerror('Thất bại', 'Không thể xóa tệp, hãy kiểm tra lại quyền sở hữu tệp.')
+        else:
+            messagebox.showerror('Thất bại', 'Tên tệp không tồn tại, vui lòng kiểm tra lại!')
+
+    delete_button = ttk.Button(menu_frame, text = 'Xóa', style='Accent.TButton', command=lambda: f_delete(), width=10)
+    delete_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
     # row 2
     '''
@@ -330,25 +361,26 @@ def main_window():
         file_2 = database_path + '\\' + fn
         if os.path.exists(file_2):
             messagebox.showinfo('Thành công', 'Thêm tệp vào cơ sở dữ liệu thành công !')
+            fRefresh()
         else:
             messagebox.showerror('Thất bại', 'Thêm tệp vào cơ sở dữ liệu thất bại !')
 
-    calc = ttk.Button(radio_frame, text='Máy tính', command=calc, style="Accent.TButton")
+    calc = ttk.Button(radio_frame, text='Máy tính', command=calc, style="Accent.TButton", width=20)
     calc.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-    refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh, style="Accent.TButton")
+    refresh_button = ttk.Button(radio_frame, text="Làm mới danh sách", command=fRefresh, style="Accent.TButton",width=20)
     refresh_button.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-    backup_button = ttk.Button(radio_frame, text='Sao lưu dữ liệu', command=fBackup, style="Accent.TButton")
+    backup_button = ttk.Button(radio_frame, text='Sao lưu dữ liệu', command=fBackup, style="Accent.TButton",width=20)
     backup_button.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
 
-    add_button = ttk.Button(radio_frame, text='Thêm tệp vào cơ sở dữ liệu', command=fAdd, style="Accent.TButton")
+    add_button = ttk.Button(radio_frame, text='Thêm tệp vào cơ sở dữ liệu', command=fAdd, style="Accent.TButton",width=20)
     add_button.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
 
-    about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about, style="Accent.TButton")
+    about_button = ttk.Button(radio_frame, text='Thông tin phần mềm', command=about, style="Accent.TButton",width=20)
     about_button.grid(row=2, column=1, padx=10, pady=10, sticky='nsew')
 
-    exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton")
+    exit_button = ttk.Button(radio_frame, text='Thoát chương trình', command=fExit_button, style="Accent.TButton",width=20)
     exit_button.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
 
     # Sizegrip
