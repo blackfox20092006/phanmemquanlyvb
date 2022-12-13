@@ -9,6 +9,9 @@ def fCheckdb():
     try:
         os.chdir(database_path)
         os.chdir(main_path)
+        os.chdir(main_path + '\\backup')
+        os.chdir(main_path + '\\img')
+        os.chdir(main_path + '\\Library')
         return 0
     except:
         return 'MissingDatabase'
@@ -88,6 +91,8 @@ def fChecktag(tag):
     for i in tag:
         if i == ' ' or i == '_' or i == '?' or i == '/' or i == '+' or i == '-' or i == '_' or i == ')' or i == '(' or i == '|' or i == '{' or i == '}' or i == '[' or i == ']' or i == '"' or i == ':' or i == ';' or i == '>' or i == '<' or i == ',' or i == '.' or i == '~' or i == '@' or i == '#' or i == '$' or i == '%' or i == '^' or i == '&' or i == '*' or i == '\\':
             return -1
+        elif tag[0].isnumeric() == True:
+            return -1
     else:
         return 0
 def fChangetag(new_tag, file_name):
@@ -165,6 +170,7 @@ def fFind (keyword):
     for i in file_list:
         if i.find(keyword) != -1 or (i.upper()).find(keyword) != -1 or (i.lower()).find(keyword) != -1 or i.find(keyword.upper()) != -1 or (i.upper()).find(keyword.upper()) != -1  or (i.lower()).find(keyword.upper()) != -1 or i.find(keyword.lower()) != -1 or (i.upper()).find(keyword.lower()) != -1  or (i.lower()).find(keyword.lower()) != -1 :
             result += [i]
+
     result2 = []
     for i in result:
         if i not in result2:
