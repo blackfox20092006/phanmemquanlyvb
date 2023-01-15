@@ -1,3 +1,5 @@
+#Toàn bộ project được phát triển bởi Trần Thanh Trọng (Frontend) và Hoàng Quang Nhân (Backend)
+#Vui lòng ghi ra đầy đủ nguồn khi sao chép và đăng lại trên các forum khác.
 import shutil
 import os.path
 from datetime import datetime
